@@ -16,6 +16,11 @@ public class CheckHit : MonoBehaviour
         checkButton.onClick.AddListener(Check);
     }
 
+    void Update()
+    {
+        Check();
+    }
+
     public void Check()
     {
         bool result = _CheckHit(_sphere, _sector);
@@ -59,32 +64,29 @@ public class CheckHit : MonoBehaviour
         float angleDegree = sectorObj._angleDegree;//扇形夹角
         float angle = Mathf.Deg2Rad * angleDegree / 2;//半角弧度
         float sectorRadius = sectorObj._radius;//扇形长度
-
         //Debug.Log("A:" + a + ",B:" + b + ",C:" + c);
 
-        //扇形平面
-        Plane sectorPlane = new Plane(a, b, c);
-        float distancePointToPlane = Mathf.Abs(sectorPlane.GetDistanceToPoint(o));
-        Debug.Log("球心到扇形平面距离：" + distancePointToPlane);
+        Vector3 ab = b - a;
+        Vector3 ac = c - a;
+        Vector3 ao = o - a;
+        Vector3 u = ( ab + ac ).normalized;//扇形方向上的单位向量
+        Vector3 aoo = GetProjection(ab, ac, ao);//扇形原点到球心向量在扇形平面上的投影向量
+        Debug.Log("扇形到球心向量在扇形平面的投影：" + aoo);
 
-        if(distancePointToPlane > sphereRadius)
+        float distancePointToPlane = ( aoo - ao ).magnitude;//球心到扇形平面的距离
+        Debug.Log("球心到扇形平面的距离：" + distancePointToPlane);
+
+        if (distancePointToPlane > sphereRadius)
         {
             check = false;
         }
         else
         {
-            Vector3 ab = b - a;
-            Vector3 ac = c - a;
-            Vector3 ao = o - a;
-            Vector3 u = ( ab + ac ).normalized;//扇形方向上的单位向量
-            Vector3 aoo = GetProjection(ab, ac, ao);//扇形原点到球心向量在扇形平面上的投影向量
-            Debug.Log("扇形到球心向量在扇形平面的投影：" + aoo);
-
-            float sqrRadius = Mathf.Sqrt(( sphereRadius * sphereRadius ) - ( ao - aoo ).sqrMagnitude);//扇形平面横切球体出来的圆的半径
-            Debug.Log("横切圆的半径:" + sqrRadius);
-
             float distancePointToPoint = aoo.sqrMagnitude;//扇形原点到球心投影的距离平方
-            Debug.Log("球心到扇形原点距离：" + Mathf.Sqrt(distancePointToPoint));
+            Debug.Log("球心投影到扇形原点距离：" + Mathf.Sqrt(distancePointToPoint));
+
+            float sqrRadius = Mathf.Sqrt(( sphereRadius * sphereRadius ) - ( distancePointToPlane * distancePointToPlane ));//扇形平面横切球体出来的圆的半径
+            Debug.Log("横切圆的半径:" + sqrRadius);
 
             if (distancePointToPoint > ( sectorRadius + sqrRadius ) * ( sectorRadius + sqrRadius ))
             {
@@ -101,7 +103,6 @@ public class CheckHit : MonoBehaviour
                 else
                 {
                     Vector3 oo = new Vector3(aoo.x + a.x, aoo.y + a.y, aoo.z + a.z);
-
                     Debug.Log("横切圆圆心：" + oo);
 
                     float disAB = SegmentPointSqrDistance(a, b, oo);
