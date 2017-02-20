@@ -57,8 +57,6 @@ public class Sector : MonoBehaviour
         //vertices[0] = sector.transform.localPosition;
         vertices[0] = new Vector3(0, 0, 0);
 
-        Debug.Log("扇形圆点：" + vertices[0]);
-
         float angle = Mathf.Deg2Rad * angleDegree;
         float currAngle = angle / 2;
         float deltaAngle = angle / segments;
@@ -67,8 +65,6 @@ public class Sector : MonoBehaviour
             vertices[i] = new Vector3(Mathf.Cos(currAngle) * radius, 0, Mathf.Sin(currAngle) * radius) + vertices[0];
             currAngle -= deltaAngle;
         }
-
-        Debug.Log("顶点坐标：" + vertices[1] + "," + vertices[segments + 1]);
 
         int[] triangles = new int[segments * 3];
         for (int i = 0, vi = 1; i < triangles.Length; i += 3, vi++)

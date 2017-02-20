@@ -49,6 +49,12 @@ public class CheckHit : MonoBehaviour
         return v - Vector3.Dot(v, n) * n;
     }
 
+    /// <summary>
+    /// 相交检测
+    /// </summary>
+    /// <param name="sphere"></param>
+    /// <param name="sector"></param>
+    /// <returns></returns>
     public bool _CheckHit(GameObject sphere, GameObject sector)
     {
         bool check = false;
@@ -76,6 +82,7 @@ public class CheckHit : MonoBehaviour
         float distancePointToPlane = ( aoo - ao ).magnitude;//球心到扇形平面的距离
         Debug.Log("球心到扇形平面的距离：" + distancePointToPlane);
 
+        //球心到扇形平面距离大于半径，不相交
         if (distancePointToPlane > sphereRadius)
         {
             check = false;
@@ -88,6 +95,7 @@ public class CheckHit : MonoBehaviour
             float sqrRadius = Mathf.Sqrt(( sphereRadius * sphereRadius ) - ( distancePointToPlane * distancePointToPlane ));//扇形平面横切球体出来的圆的半径
             Debug.Log("横切圆的半径:" + sqrRadius);
 
+            //球心投影向量长度大于扇形半径+横切圆半径，不相交
             if (distancePointToPoint > ( sectorRadius + sqrRadius ) * ( sectorRadius + sqrRadius ))
             {
                 check = false;
