@@ -107,8 +107,8 @@ public class CheckHit : MonoBehaviour
 
                     float disAB = SegmentPointSqrDistance(a, b, oo);
                     float disAC = SegmentPointSqrDistance(a, c, oo);
-                    Debug.Log("横切圆圆心到ab线段距离：" + disAB);
-                    Debug.Log("横切圆圆心到ac线段距离：" + disAC);
+                    Debug.Log("横切圆圆心到ab线段距离：" + Mathf.Sqrt(disAB));
+                    Debug.Log("横切圆圆心到ac线段距离：" + Mathf.Sqrt(disAC));
 
                     if (( disAB > ( sqrRadius * sqrRadius ) ) && ( disAC > ( sqrRadius * sqrRadius ) ))
                     {
